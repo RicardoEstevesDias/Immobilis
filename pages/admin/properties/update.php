@@ -7,12 +7,9 @@ if($_SERVER["REQUEST_METHOD"] !== "POST"){
     header("Location: /immobilis/pages/admin/login.php");
 };
 
-var_dump($_POST);
-die;
-
-if(!empty($_POST)/* && 
-isset($_POST["id"]) &&
-isset($_POST["name"]) &&
+if(!empty($_POST) &&
+isset($_POST["property_id"]) &&
+isset($_POST["title"]) &&
 isset($_POST["price"]) &&
 isset($_POST["rooms"]) &&
 isset($_POST["floor"]) &&
@@ -24,24 +21,22 @@ isset($_POST["type"]) &&
 isset($_POST["number"]) &&
 isset($_POST["city"]) &&
 isset($_POST["street"]) &&
-isset($_POST["zipcode"])*/)
+isset($_POST["zipcode"]))
 {
     $id = intval(htmlentities($_POST["property_id"]));
-    $title = htmlentities($_POST["name"]);
+    $title = htmlentities($_POST["title"]);
     $price = htmlentities($_POST["price"]);
     $rooms = htmlentities($_POST["rooms"]);
-    $floor = htmlentities($_POST["name"]);
+    $floor = htmlentities($_POST["floor"]);
     $bedrooms = htmlentities($_POST["bedrooms"]);
     $bathrooms = htmlentities($_POST["bathrooms"]);
     $surface = htmlentities($_POST["surface"]);
     $description = htmlentities($_POST["description"]);
-    $type = htmlentities($_POST["type"]);
+    $typeId = htmlentities($_POST["type"]);
     $number = htmlentities($_POST["number"]);
     $city = htmlentities($_POST["city"]);
     $street = htmlentities($_POST["street"]);
     $zipcode = htmlentities($_POST["zipcode"]);
-    $options = $_POST["options"];
-    $images = $_POST["images"];
     
 
     require "../../../database/connexion.php";
@@ -54,7 +49,7 @@ isset($_POST["zipcode"])*/)
     $address = new Address($pdo);
     $propertyOption = new PropertyOption($pdo);
 
-    if ($options){
+    if (isset($_POST["options"])){
         $Property->deletePropertiesOptionsById($id);
         $optionsIds = [];
         foreach ($_POST["options"] as $o) {
@@ -63,13 +58,13 @@ isset($_POST["zipcode"])*/)
         $propertyOption->store($id, $optionsIds);
     }
 
-    if ($images) {
+    if ($_FILES["images"]["name"][0]) {
 
+        $images = [];
         $image_del = json_decode($Property->selectImages($id)["images"]);
         foreach ($image_del as $i) {
             unlink("../../../public/" . $i);
         }
-
         $fileNames = $_FILES["images"]["name"];
         $tmpNames = $_FILES["images"]["tmp_name"];
         $documentRoot = $_SERVER["DOCUMENT_ROOT"];
@@ -85,7 +80,8 @@ isset($_POST["zipcode"])*/)
 
     $address->update($id, $street, $city, $zipcode, $number);
 
-    $result = $Property->update( $title,
+    $result = $Property->update(    $id,
+                                    $title,
                                     $price,
                                     $surface,
                                     $rooms,
@@ -93,8 +89,7 @@ isset($_POST["zipcode"])*/)
                                     $bedrooms,
                                     $bathrooms,
                                     $description,
-                                    $typeId,
-                                    $addressId);
+                                    $typeId );
    
     if($result){
         $_SESSION["success"] = "La propriété à été mise à jour";

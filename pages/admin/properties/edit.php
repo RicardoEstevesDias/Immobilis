@@ -24,10 +24,10 @@
 <main class="container p-4">
     <h1>Modifier la propriété &#34;<?=$pro["title"]?>&#34;</h1>
 
-    <form action="pages/admin/properties/update.php" method="POST">
+    <form action="pages/admin/properties/update.php" method="POST" enctype="multipart/form-data">
         <div class="row">
             <div class="col">
-                <?php $value=$pro["title"]; $name="name"; $label="Titre du bien"; require "../../components/input.php"?>
+                <?php $value=$pro["title"]; $name="title"; $label="Titre du bien"; require "../../components/input.php"?>
                 <?php $value=$pro["price"]; $name="price"; $label="Prix";  $type="number"; require "../../components/Input.php"?>
                 <?php $value=$pro["rooms"]; $name="rooms"; $label="Nombre de pièces";  $type="number"; require "../../components/Input.php"?>
                 <?php $value=$pro["floor"]; $name="floor"; $label="Etage";  $type="number"; require "../../components/Input.php"?>

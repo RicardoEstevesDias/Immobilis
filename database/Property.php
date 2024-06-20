@@ -149,7 +149,7 @@ class Property
                             $description,
                             $typeId)
     {
-        $query = "  UPDATE immobilis.options 
+        $query = "  UPDATE immobilis.properties
                     SET title = ?,
                         price = ?,
                         surface = ?,
@@ -158,7 +158,7 @@ class Property
                         bedrooms = ?,
                         bathrooms = ?,
                         description = ?,
-                        typeId = ? 
+                        property_types_id = ? 
                     WHERE id = ?";
         $stmt = $this->pdo->prepare($query);
         return $stmt->execute([$title, $price, $surface, $rooms, $floor, $bedrooms, $bathrooms, $description, $typeId, $id]);
